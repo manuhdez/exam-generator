@@ -11,7 +11,6 @@ export default async (req, res) => {
 
     res.status(201).json(reports);
   } catch (err) {
-    console.log('❌ Error generating report');
     res.status(500).json({ err });
   }
 };
