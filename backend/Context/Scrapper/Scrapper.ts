@@ -6,12 +6,18 @@ export default class Scrapper {
   private page: puppeteer.Page;
 
   async openNewBrowser() {
-    console.log('🚀 Opening browser...');
-    const browser = await puppeteer.launch();
-    const [page] = await browser.pages();
+    try {
+      console.log('🚀 Opening browser...');
+      const browser = await puppeteer.launch();
+      console.log('browser opened');
+      const [page] = await browser.pages();
+      console.log('page gathered');
 
-    this.browser = browser;
-    this.page = page;
+      this.browser = browser;
+      this.page = page;
+    } catch (e) {
+      console.error(e.message)
+    }
   }
 
   async goto(uri) {
