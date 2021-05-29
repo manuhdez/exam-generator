@@ -1,5 +1,4 @@
 .idea/**
-/apps/frontend/.next/
 
 # dependencies
 /node_modules
@@ -14,7 +13,8 @@
 /out/
 
 # production
-/build
+/frontend/.next/
+/backend/build/
 
 # misc
 .DS_Store

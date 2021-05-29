@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
-import Exam from "../../../src/Exam/Exam";
-import App from "../../../src/App/App";
+import Exam from "../Context/Exam/Exam";
+import App from "../Context/App/App";
 
 export default class ExamPostController {
   public static async invoke(req: Request, res: Response) {

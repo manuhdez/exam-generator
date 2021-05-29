@@ -15,6 +15,6 @@ export default class Exam {
 
   private static checkUriValidation(uri: string) {
     if (!uri) throw new Error("No url was provided for the exam")
-    const url = new URL(uri);
+    new URL(uri);
   }
 }
