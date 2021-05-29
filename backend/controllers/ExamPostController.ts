@@ -6,7 +6,9 @@ export default class ExamPostController {
   public static async invoke(req: Request, res: Response) {
     try {
       const { title, uri } = req.body;
+      console.log({ title, uri })
       const exam = new Exam(title, uri);
+      console.log({ exam })
       const app = new App();
       const [report] = await app.run([exam]);
 

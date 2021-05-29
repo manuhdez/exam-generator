@@ -22,6 +22,7 @@ export default class App {
       throw new Error('No exams found to process');
 
     await this.scrapper.openNewBrowser();
+    console.log("browser opened")
 
     for (let i = 0; i < examList.length; i++) {
       const exam = examList[i];
