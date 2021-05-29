@@ -4,6 +4,11 @@
   "scripts": {
     "dev": "ts-node index.ts",
     "build": "tsc",
-    "start": "node build/index.js"
+    "start": "node build/index.js",
+    "test": "jest --passWithNoTests",
+    "test:ci": "jest --ci --passWithNoTests"
+  },
+  "devDependencies": {
+    "supertest": "^6.1.3"
   }
 }
