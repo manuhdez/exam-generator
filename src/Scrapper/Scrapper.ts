@@ -1,5 +1,5 @@
 import puppeteer from 'puppeteer';
-import QuestionOption from "../Question/QuestionOption";
+import QuestionOption from '../Question/QuestionOption';
 
 export default class Scrapper {
   private browser: puppeteer.Browser;
@@ -34,14 +34,19 @@ export default class Scrapper {
   }
 
   async getQuestionTitle() {
-    return await this.page.$eval('#demo', (el) => el.textContent);
+    return await this.page.$eval('#demo', (el) => {
+      const nodes = [];
+      el.childNodes.forEach((child) => {
+        if (child.nodeName === '#text') {
+          nodes.push(child.textContent.trim());
+        }
+      });
+      return nodes.join('');
+    });
   }
 
   async getCorrectAnswerId() {
-    return await this.page.$eval(
-      'input[value=correcto]',
-      (el) => el.id
-    );
+    return await this.page.$eval('input[value=correcto]', (el) => el.id);
   }
 
   async getQuestionOptions() {
@@ -56,7 +61,9 @@ export default class Scrapper {
         }))
     );
 
-    return options.map(({ id, value }) => this.generateOption(id, value, id === correctId));
+    return options.map(({ id, value }) =>
+      this.generateOption(id, value, id === correctId)
+    );
   }
 
   public generateOption(id: string, value: string, correct: boolean) {
@@ -75,7 +82,9 @@ export default class Scrapper {
   async clickNextQuestionButton() {
     await this.page.evaluate(() => {
       let next: HTMLButtonElement;
-      const buttons = document.querySelectorAll('button.btn.btn-outline-info.btn-lg');
+      const buttons = document.querySelectorAll(
+        'button.btn.btn-outline-info.btn-lg'
+      );
       buttons.forEach((button: HTMLButtonElement) => {
         if (button.textContent === 'Siguiente') {
           next = button;
@@ -89,6 +98,5 @@ export default class Scrapper {
 
   async close() {
     await this.browser.close();
-
   }
 }

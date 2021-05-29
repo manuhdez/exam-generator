@@ -1,6 +1,6 @@
 export default class Exam {
-  public title: string;
-  public uri: string;
+  readonly title: string;
+  readonly uri: string;
 
   constructor(title: string, uri: string) {
     Exam.checkTitleValidity(title);
@@ -14,6 +14,7 @@ export default class Exam {
   }
 
   private static checkUriValidation(uri: string) {
-    if (!uri) throw new Error("Invalid url provided to exam")
+    if (!uri) throw new Error("No url was provided for the exam")
+    const url = new URL(uri);
   }
 }

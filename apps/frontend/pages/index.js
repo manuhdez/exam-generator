@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import styles from '../styles/Home.module.css';
+import styles from '../public/styles/Home.module.css';
 import { useState } from 'react';
 
 export default function Home() {
@@ -26,7 +26,6 @@ export default function Home() {
       setExam(data[0]);
     } catch (err) {
       setIsError(true);
-      console.log(err.message);
     } finally {
       setIsLoading(false);
     }
@@ -46,7 +45,7 @@ export default function Home() {
 
   const handleCopyToClipboard = async () => {
     try {
-      navigator.clipboard.writeText(exam.content);
+      await navigator.clipboard.writeText(exam.content);
     } catch (e) {
       console.log('Could not copy to clipboard');
     }
@@ -56,7 +55,7 @@ export default function Home() {
     <div className={styles.container}>
       <Head>
         <title>Generate exam reports</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="../public/favicon.ico" />
       </Head>
 
       <main>

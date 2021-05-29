@@ -1,5 +1,5 @@
 import JsPDF from 'jspdf';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 
 export default function usePdf(docTitle = '', element = null) {
   const document = new JsPDF();

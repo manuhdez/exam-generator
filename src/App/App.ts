@@ -27,7 +27,7 @@ export default class App {
       const exam = examList[i];
       await this.scrapper.goto(exam.uri);
       await this.getQuestions();
-      await this.saveReport(exam.title);
+      this.saveReport(exam.title);
     }
 
     await this.scrapper.close();
@@ -39,7 +39,7 @@ export default class App {
     const totalSteps = await this.scrapper.getTotalSteps();
     let currentStep = await this.scrapper.getCurrentStep();
 
-    while (currentStep < totalSteps) {
+    while (currentStep <= totalSteps) {
       const question = new Question(
         String(currentStep),
         await this.scrapper.getQuestionTitle(),
@@ -48,8 +48,13 @@ export default class App {
       );
 
       this.saveQuestionData(question);
-      await this.scrapper.goToNextQuestion();
-      currentStep = await this.scrapper.getCurrentStep();
+
+      if (currentStep < totalSteps) {
+        await this.scrapper.goToNextQuestion();
+        currentStep = await this.scrapper.getCurrentStep();
+      } else {
+        break;
+      }
     }
   }
 
