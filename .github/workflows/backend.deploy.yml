@@ -9,9 +9,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: AkhileshNS/heroku-deploy@3.12.12
+      - run: cd backend && yarn install
+      - run: cd backend && yarn build
+      - uses: onekiloparsec/heroku-node-deploy-subfolder@v1.1.0
         with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          keroku_app_name: ${{secrets.HEROKU_APP_NAME}}
-          heroku_email: ${{secrets.HEROKU_EMAIL}}
-          appdir: "backend"
+          api_key: ${{secrets.HEROKU_API_KEY}}
+          app_name: ${{secrets.HEROKU_APP_NAME}}
+          heroku_branch: "main"
+          email: ${{secrets.HEROKU_EMAIL}}
+          subfolder: "backend"
