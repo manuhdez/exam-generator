@@ -2,6 +2,9 @@ import Scrapper from '../Scrapper/Scrapper';
 import Question from '../Question/Question';
 import Exam from '../Exam/Exam';
 import TextQuestionFormatter from '../QuestionFormatter/TextQuestionFormatter';
+import {ValidDomains} from "../Exam/ExamURL";
+import PsibobeeScraperStrategy from "../Scrapper/Strategies/PsibobeeScraperStrategy";
+import CarolinaScraperStrategy from "../Scrapper/Strategies/CarolinaScraperStrategy";
 
 interface ExamReport {
   title: string;
@@ -25,13 +28,28 @@ export default class App {
 
     for (let i = 0; i < examList.length; i++) {
       const exam = examList[i];
-      await this.scrapper.goto(exam.uri);
+      await this.scrapper.goto(exam.uri.value);
+      this.updateScraperStrategy(exam);
       await this.getQuestions();
       this.saveReport(exam.title);
     }
 
     await this.scrapper.close();
     return this.reports;
+  }
+
+  private updateScraperStrategy(exam: Exam): void {
+    switch(exam.uri.domain) {
+      case ValidDomains.Psicobee:
+        this.scrapper.setStrategy(new PsibobeeScraperStrategy())
+        break;
+      case ValidDomains.CarolinaLife:
+        this.scrapper.setStrategy(new CarolinaScraperStrategy())
+        break;
+      default:
+        this.scrapper.setStrategy(null)
+        break;
+    }
   }
 
   async getQuestions() {
