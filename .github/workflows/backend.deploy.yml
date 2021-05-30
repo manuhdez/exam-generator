@@ -2,8 +2,7 @@ name: Deploy backend to heroku
 
 on:
   push:
-    branches:
-      - master
+    branches: [main]
 
 jobs:
   build:
