@@ -7,5 +7,21 @@
     "start": "next start",
     "test": "jest --passWithNoTests",
     "test:ci": "jest --ci --passWithNoTests"
+  },
+  "dependencies": {
+    "jspdf": "^2.3.1",
+    "next": "10.2.2",
+    "react": "17.0.2",
+    "react-dom": "17.0.2"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.12.0",
+    "@testing-library/react": "^11.2.7",
+    "@testing-library/user-event": "^13.1.9",
+    "@types/jest": "^26.0.23",
+    "@types/node": "^15.6.1",
+    "@types/react": "^17.0.6",
+    "jest": "^27.0.3",
+    "typescript": "^4.2.4"
   }
 }

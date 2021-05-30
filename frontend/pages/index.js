@@ -2,7 +2,7 @@ import Head from 'next/head';
 import styles from '../public/styles/Home.module.css';
 import { useState } from 'react';
 
-export default function Home() {
+export default function Home({ baseUrl }) {
   const [formValue, setFormValue] = useState({
     title: '',
     uri: '',
@@ -17,13 +17,16 @@ export default function Home() {
     setIsError(false);
 
     try {
-      const response = await fetch('/api/scrape', {
+      const uri = `${baseUrl}/exam`;
+      const response = await fetch(uri, {
         method: 'POST',
-        'Content-Type': 'application/json',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(formValue),
       });
       const data = await response.json();
-      setExam(data[0]);
+      setExam(data);
     } catch (err) {
       setIsError(true);
     } finally {
@@ -95,4 +98,12 @@ export default function Home() {
       </main>
     </div>
   );
+}
+
+export async function getServerSideProps() {
+  return {
+    props: {
+      baseUrl: process.env.API_BASE_URI,
+    },
+  };
 }

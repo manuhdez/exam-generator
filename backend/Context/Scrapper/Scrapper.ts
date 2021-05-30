@@ -9,14 +9,12 @@ export default class Scrapper {
     try {
       console.log('🚀 Opening browser...');
       const browser = await puppeteer.launch();
-      console.log('browser opened');
       const [page] = await browser.pages();
-      console.log('page gathered');
 
       this.browser = browser;
       this.page = page;
     } catch (e) {
-      console.error(e.message)
+      console.error(e.message);
     }
   }
 

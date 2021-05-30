@@ -1,6 +1,6 @@
-import { Express } from "express";
-import ExamPostController from "../controllers/ExamPostController";
-import ExamsPostController from "../controllers/ExamsPostController";
+import { Express, Request, Response, NextFunction } from 'express';
+import ExamPostController from '../controllers/ExamPostController';
+import ExamsPostController from '../controllers/ExamsPostController';
 
 export default class Router {
   registerRoutes(app: Express) {
