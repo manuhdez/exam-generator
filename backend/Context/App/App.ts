@@ -31,7 +31,7 @@ export default class App {
       await this.scrapper.goto(exam.uri.value);
       this.updateScraperStrategy(exam);
       await this.getQuestions();
-      this.saveReport(exam.title);
+      this.saveReport(exam.title.value);
     }
 
     await this.scrapper.close();
@@ -39,7 +39,7 @@ export default class App {
   }
 
   private updateScraperStrategy(exam: Exam): void {
-    switch(exam.uri.domain) {
+    switch (exam.uri.domain) {
       case ValidDomains.Psicobee:
         this.scrapper.setStrategy(new PsibobeeScraperStrategy())
         break;
@@ -56,20 +56,27 @@ export default class App {
     console.log('🔎 Gathering questions data...');
     const totalSteps = await this.scrapper.getTotalSteps();
     let currentStep = await this.scrapper.getCurrentStep();
+    const formatter = new TextQuestionFormatter();
 
     while (currentStep <= totalSteps) {
+      const questionId = String(currentStep);
+      const title = await this.scrapper.getQuestionTitle();
+      const options = await this.scrapper.getQuestionOptions();
+
       const question = new Question(
-        String(currentStep),
-        await this.scrapper.getQuestionTitle(),
-        await this.scrapper.getQuestionOptions(),
-        new TextQuestionFormatter()
+        questionId,
+        title,
+        options,
+        formatter
       );
 
       this.saveQuestionData(question);
 
       if (currentStep < totalSteps) {
         await this.scrapper.goToNextQuestion();
-        currentStep = await this.scrapper.getCurrentStep();
+        const newStep = await this.scrapper.getCurrentStep();
+        if (currentStep === newStep) throw new Error("Question is the same")
+        currentStep = newStep;
       } else {
         break;
       }
