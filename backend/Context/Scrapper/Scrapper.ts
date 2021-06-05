@@ -1,9 +1,16 @@
 import puppeteer from 'puppeteer';
-import QuestionOption from '../Question/QuestionOption';
+import ScraperStrategy from "./ScraperStrategy";
 
 export default class Scrapper {
   private browser: puppeteer.Browser;
   private page: puppeteer.Page;
+  private strategy: ScraperStrategy;
+
+  public setStrategy(strategy: ScraperStrategy) {
+    if (this.strategy !== strategy) {
+      this.strategy = strategy;
+    }
+  }
 
   async openNewBrowser() {
     try {
@@ -19,85 +26,28 @@ export default class Scrapper {
   }
 
   async goto(uri) {
-    await this.page.setViewport({ width: 1920, height: 1080 });
+    await this.page.setViewport({ width: 1000, height: 1080 });
     await this.page.goto(uri, { waitUntil: 'load' });
   }
 
   async getTotalSteps() {
-    return this.page.$eval('#totalp', (element) => {
-      const text = element.textContent.split('/')[1];
-      return parseInt(text);
-    });
+    return await this.strategy.getTotalSteps(this.page);
   }
 
   async getCurrentStep() {
-    return this.page.$eval('#totalp', (element) => {
-      const text = element.textContent.split('/')[0];
-      return parseInt(text);
-    });
+    return await this.strategy.getCurrentStep(this.page)
   }
 
   async getQuestionTitle() {
-    return await this.page.$eval('#demo', (el) => {
-      const nodes = [];
-      el.childNodes.forEach((child) => {
-        if (child.nodeName === '#text') {
-          nodes.push(child.textContent.trim());
-        }
-      });
-      return nodes.join('');
-    });
-  }
-
-  async getCorrectAnswerId() {
-    return await this.page.$eval('input[value=correcto]', (el) => el.id);
+    return this.strategy.getQuestionTitle(this.page)
   }
 
   async getQuestionOptions() {
-    const correctId = await this.getCorrectAnswerId();
-
-    const options = await this.page.$$eval(
-      'label.custom-control-label',
-      (elements) =>
-        elements.map((element: HTMLFormElement) => ({
-          id: element.htmlFor,
-          value: element.textContent,
-        }))
-    );
-
-    return options.map(({ id, value }) =>
-      this.generateOption(id, value, id === correctId)
-    );
-  }
-
-  public generateOption(id: string, value: string, correct: boolean) {
-    return new QuestionOption(id, value, correct);
+    return await this.strategy.getQuestionOptions(this.page)
   }
 
   async goToNextQuestion() {
-    // select an option
-    await this.page.click('label[for=r0]');
-    // answer question
-    await this.page.click('button#bcont');
-    // go to next question
-    await this.clickNextQuestionButton();
-  }
-
-  async clickNextQuestionButton() {
-    await this.page.evaluate(() => {
-      let next: HTMLButtonElement;
-      const buttons = document.querySelectorAll(
-        'button.btn.btn-outline-info.btn-lg'
-      );
-      buttons.forEach((button: HTMLButtonElement) => {
-        if (button.textContent === 'Siguiente') {
-          next = button;
-        }
-      });
-
-      if (!next) throw new Error('No next button was found');
-      next.click();
-    });
+    await this.strategy.goToNextQuestion(this.page);
   }
 
   async close() {

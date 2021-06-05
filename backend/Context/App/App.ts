@@ -2,6 +2,9 @@ import Scrapper from '../Scrapper/Scrapper';
 import Question from '../Question/Question';
 import Exam from '../Exam/Exam';
 import TextQuestionFormatter from '../QuestionFormatter/TextQuestionFormatter';
+import {ValidDomains} from "../Exam/ExamURL";
+import PsibobeeScraperStrategy from "../Scrapper/Strategies/PsibobeeScraperStrategy";
+import CarolinaScraperStrategy from "../Scrapper/Strategies/CarolinaScraperStrategy";
 
 interface ExamReport {
   title: string;
@@ -25,33 +28,55 @@ export default class App {
 
     for (let i = 0; i < examList.length; i++) {
       const exam = examList[i];
-      await this.scrapper.goto(exam.uri);
+      await this.scrapper.goto(exam.uri.value);
+      this.updateScraperStrategy(exam);
       await this.getQuestions();
-      this.saveReport(exam.title);
+      this.saveReport(exam.title.value);
     }
 
     await this.scrapper.close();
     return this.reports;
   }
 
+  private updateScraperStrategy(exam: Exam): void {
+    switch (exam.uri.domain) {
+      case ValidDomains.Psicobee:
+        this.scrapper.setStrategy(new PsibobeeScraperStrategy())
+        break;
+      case ValidDomains.CarolinaLife:
+        this.scrapper.setStrategy(new CarolinaScraperStrategy())
+        break;
+      default:
+        this.scrapper.setStrategy(null)
+        break;
+    }
+  }
+
   async getQuestions() {
     console.log('🔎 Gathering questions data...');
     const totalSteps = await this.scrapper.getTotalSteps();
     let currentStep = await this.scrapper.getCurrentStep();
+    const formatter = new TextQuestionFormatter();
 
     while (currentStep <= totalSteps) {
+      const questionId = String(currentStep);
+      const title = await this.scrapper.getQuestionTitle();
+      const options = await this.scrapper.getQuestionOptions();
+
       const question = new Question(
-        String(currentStep),
-        await this.scrapper.getQuestionTitle(),
-        await this.scrapper.getQuestionOptions(),
-        new TextQuestionFormatter()
+        questionId,
+        title,
+        options,
+        formatter
       );
 
       this.saveQuestionData(question);
 
       if (currentStep < totalSteps) {
         await this.scrapper.goToNextQuestion();
-        currentStep = await this.scrapper.getCurrentStep();
+        const newStep = await this.scrapper.getCurrentStep();
+        if (currentStep === newStep) throw new Error("Question is the same")
+        currentStep = newStep;
       } else {
         break;
       }

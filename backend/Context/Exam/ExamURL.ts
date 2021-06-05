@@ -1,3 +1,8 @@
+export enum ValidDomains {
+  Psicobee = 'www.psicobee.com',
+  CarolinaLife = 'universidad.carolinalife.es'
+}
+
 export default class ExamURL {
   readonly value: string;
   readonly domain: string;
