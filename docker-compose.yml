@@ -1,0 +1,12 @@
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      API_BASE_URI: "http://localhost:3001"
+
+  backend:
+    build: ./backend
+    ports:
+      - "3001:3001"

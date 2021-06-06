@@ -11,10 +11,11 @@ jobs:
       - uses: actions/checkout@v2
       - run: cd backend && yarn install
       - run: cd backend && yarn build
-      - uses: onekiloparsec/heroku-node-deploy-subfolder@v1.1.0
+      - name: Build, Push and Deploy to Heroku #set the whatever name you want to this step
+        id: heroku
+        uses: jctaveras/heroku-deploy@v1.0.0  # use the latest version of the action
         with:
-          api_key: ${{secrets.HEROKU_API_KEY}}
-          app_name: ${{secrets.HEROKU_APP_NAME}}
-          heroku_branch: "main"
-          email: ${{secrets.HEROKU_EMAIL}}
-          subfolder: "backend"
+          email: ${{ secrets.HEROKU_EMAIL }} # your heroku email
+          api_key: ${{ secrets.HEROKU_API_KEY }} # your  heroku api key
+          app_name: ${{ secrets.HEROKU_APP_NAME }} # you aplication name
+          dockerfile_path: './backend' # set the path to the folder wher the Dokerfile is located
