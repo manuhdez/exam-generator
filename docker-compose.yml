@@ -1,8 +1,11 @@
+version: '2.3'
 services:
   frontend:
     build: ./frontend
     ports:
       - "3000:3000"
+    volumes:
+      - ${PWD}/frontend:/app
     environment:
       API_BASE_URI: "http://localhost:3001"
 
@@ -10,3 +13,5 @@ services:
     build: ./backend
     ports:
       - "3001:3001"
+    volumes:
+      - ${PWD}/backend:/app
