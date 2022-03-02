@@ -26,7 +26,6 @@ export default class Scrapper {
   }
 
   async goto(uri) {
-    await this.page.setViewport({ width: 1000, height: 1080 });
     await this.page.goto(uri, { waitUntil: 'load' });
   }
 
