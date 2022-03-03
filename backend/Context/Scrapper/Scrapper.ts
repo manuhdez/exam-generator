@@ -15,7 +15,11 @@ export default class Scrapper {
   async openNewBrowser() {
     try {
       console.log('🚀 Opening browser...');
-      const browser = await puppeteer.launch();
+      console.log({ path: process.env.PUPPETEER_EXECUTABLE_PATH})
+      const browser = await puppeteer.launch({
+        executablePath: '/usr/bin/chromium-browser',
+        args: ['--disable-dev-shm-usage', '--no-sandbox']
+      });
       const [page] = await browser.pages();
 
       this.browser = browser;

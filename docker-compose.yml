@@ -1,17 +1,15 @@
-version: '2.3'
+version: '3.9'
 services:
   frontend:
     build: ./frontend
     ports:
       - "3000:3000"
-    volumes:
-      - ${PWD}/frontend:/app
     environment:
       API_BASE_URI: "http://localhost:3001"
+      PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
+      PUPPETEER_EXECUTABLE_PATH: "/usr/bin/chromium-browser"
 
   backend:
     build: ./backend
     ports:
       - "3001:3001"
-    volumes:
-      - ${PWD}/backend:/app
